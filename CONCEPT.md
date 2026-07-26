@@ -1,8 +1,8 @@
-# ArtiProbe concept
+# BlobDive concept
 
 ## One-line thesis
 
-ArtiProbe gives humans and software agents one bounded, recursive interface for
+BlobDive gives humans and software agents one bounded, recursive interface for
 understanding unfamiliar software and media artifacts.
 
 ## Problem
@@ -41,16 +41,16 @@ only the relevant children under explicit budgets.**
 ## Proposed command contract
 
 ```text
-artiprobe schema --brief --format json
-artiprobe detect release.bin --format json
-artiprobe inspect release.zip --depth 2 --max-entries 200 --format json
-artiprobe list 'artifact://<digest>!/path/to/child' --format json
-artiprobe read 'artifact://<digest>!/manifest.json' --max-bytes 65536
-artiprobe adapters --format json
+blobdive schema --brief --format json
+blobdive detect release.bin --format json
+blobdive inspect release.zip --depth 2 --max-entries 200 --format json
+blobdive list 'artifact://<digest>!/path/to/child' --format json
+blobdive read 'artifact://<digest>!/manifest.json' --max-bytes 65536
+blobdive adapters --format json
 ```
 
 References are opaque identifiers, not filesystem paths. A caller can pass a
-reference back to ArtiProbe without learning adapter-specific syntax.
+reference back to BlobDive without learning adapter-specific syntax.
 
 ## Common artifact envelope
 
