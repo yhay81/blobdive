@@ -2,7 +2,7 @@
 
 Bounded, read-only inspection of nested software artifacts.
 
-> Status: BlobDive 0.1.0 is released. Detection, recursive ZIP/TAR/GZIP
+> Status: BlobDive 0.2.0 is released. Detection, recursive ZIP/TAR/GZIP
 > inspection, deterministic references, bounded reads, schemas, and
 > cross-platform tests are available.
 

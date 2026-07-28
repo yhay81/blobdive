@@ -83,7 +83,7 @@ fn schemas_completions_and_usage_contract_are_stable() -> TestResult {
         let value = success_json(&["--format", "json", "schema", "--document", document])?;
         if document == "brief" {
             assert_eq!(value["schema_version"], "blobdive.brief.v1");
-            assert_eq!(value["blobdive_version"], "0.1.0");
+            assert_eq!(value["blobdive_version"], env!("CARGO_PKG_VERSION"));
         } else {
             assert!(value["$schema"].is_string());
         }
