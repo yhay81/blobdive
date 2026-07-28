@@ -45,3 +45,11 @@ Maintainers periodically review dependency freshness, unanswered reports,
 cross-platform and adversarial failures, corpus accuracy, budget guarantees,
 schema compatibility, release reproducibility, security reports, and opt-in
 adoption.
+
+## Continuity
+
+The project currently has one repository owner and one release-capable
+maintainer. [MAINTAINER_CONTINUITY.md](MAINTAINER_CONTINUITY.md) records the
+unmitigated authority risks, fail-closed signing-key rotation, and a monthly
+public recovery drill. A green drill does not substitute for a second
+maintainer or restore private repository state.
