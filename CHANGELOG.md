@@ -9,6 +9,8 @@ for CLI and machine-contract compatibility.
 
 - Public 28-case synthetic v0.1 detection corpus with reproducible metrics for
   all supported signatures, alternate signatures, and adversarial near-misses.
+- Deterministic 10,000-entry full-scan and 100,000-entry bounded benchmark
+  workloads with weekly raw JSON measurement artifacts.
 
 ### Changed
 
