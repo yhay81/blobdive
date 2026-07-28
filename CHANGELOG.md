@@ -8,6 +8,8 @@ for CLI and machine-contract compatibility.
 ### Changed
 
 - Updated the README status after the public 0.1.0 release.
+- Defined measurable v1.0 compatibility, corpus accuracy, isolation, security,
+  performance, delivery, maintenance, contribution, and repeat-adoption gates.
 
 ## [0.1.0] - 2026-07-28
 
