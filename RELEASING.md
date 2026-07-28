@@ -32,7 +32,8 @@ Only a release manager named in [GOVERNANCE.md](GOVERNANCE.md) may release.
 
 7. The release workflow creates four native archives, completions, a CycloneDX
    SBOM, `SHA256SUMS`, a GitHub release, and GitHub/Sigstore build-provenance
-   and SBOM attestations.
+   and SBOM attestations. Each archive includes a downloadable
+   `.intoto.jsonl` provenance bundle for local verification.
 8. Download all assets into a clean directory. Verify checksums and both
    attestation predicates:
 
@@ -40,6 +41,10 @@ Only a release manager named in [GOVERNANCE.md](GOVERNANCE.md) may release.
    sha256sum --check SHA256SUMS
    gh attestation verify blobdive-v0.2.0-linux-x86_64.tar.gz \
      --repo yhay81/blobdive
+   gh attestation verify blobdive-v0.2.0-linux-x86_64.tar.gz \
+     --repo yhay81/blobdive \
+     --bundle blobdive-v0.2.0-linux-x86_64.tar.gz.intoto.jsonl \
+     --signer-workflow yhay81/blobdive/.github/workflows/release.yml
    gh attestation verify blobdive-v0.2.0-linux-x86_64.tar.gz \
      --repo yhay81/blobdive \
      --predicate-type https://cyclonedx.org/bom
