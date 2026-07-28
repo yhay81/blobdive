@@ -5,6 +5,14 @@ for CLI and machine-contract compatibility.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-29
+
+### Compatibility
+
+- Preserved the public v0.1 CLI, document, reference, and adapter contracts.
+  The v0.2 reader accepts the digest-pinned v0.1 contract corpus and
+  root-anchored references unchanged; no migration is required.
+
 ### Added
 
 - Public 28-case synthetic v0.1 detection corpus with reproducible metrics for
@@ -36,5 +44,6 @@ for CLI and machine-contract compatibility.
   cross-platform tests.
 - OSS governance, security, support, contribution, and signed release policy.
 
-[Unreleased]: https://github.com/yhay81/blobdive/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/yhay81/blobdive/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/yhay81/blobdive/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/yhay81/blobdive/releases/tag/v0.1.0
