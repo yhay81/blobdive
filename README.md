@@ -2,9 +2,9 @@
 
 Bounded, read-only inspection of nested software artifacts.
 
-> Status: 0.1 release candidate. Detection, recursive ZIP/TAR/GZIP inspection,
-> deterministic references, bounded reads, schemas, and cross-platform tests
-> are implemented.
+> Status: BlobDive 0.1.0 is released. Detection, recursive ZIP/TAR/GZIP
+> inspection, deterministic references, bounded reads, schemas, and
+> cross-platform tests are available.
 
 BlobDive answers “what is inside this file?” without extracting entries,
 executing content, trusting filename extensions, or producing unbounded output.
