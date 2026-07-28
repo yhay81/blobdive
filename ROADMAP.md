@@ -17,7 +17,10 @@
 - richer executable and package-container metadata
 - input streaming design that preserves deterministic references
 - better Unicode/raw-name presentation
-- benchmark output bytes and latency against composed specialist tools
+- [x] publish a deterministic 10,000-entry full-scan and 100,000-entry bounded
+  raw benchmark harness with weekly artifact retention
+- calibrate p95 and regression thresholds from repeated hosted-runner results,
+  then benchmark output bytes and latency against composed specialist tools
 
 ## 0.3 — parser isolation
 

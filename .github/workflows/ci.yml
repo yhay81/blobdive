@@ -31,6 +31,26 @@ jobs:
         run: |
           jq -e . tests/fixtures/detection/v0.1/corpus.json >/dev/null
           jq -e . tests/fixtures/detection/v0.1/metrics.json >/dev/null
+      - name: Benchmark harness
+        shell: bash
+        run: |
+          bash -n benchmarks/run.sh
+          fixture="${RUNNER_TEMP}/blobdive-benchmark-smoke.zip"
+          python3 benchmarks/generate_zip.py --entries 3 --output "${fixture}"
+          python3 - "${fixture}" <<'PY'
+          import pathlib
+          import sys
+          import zipfile
+
+          fixture = pathlib.Path(sys.argv[1])
+          with zipfile.ZipFile(fixture) as archive:
+              assert archive.namelist() == [
+                  "entries/000000000.txt",
+                  "entries/000000001.txt",
+                  "entries/000000002.txt",
+              ]
+              assert archive.read("entries/000000002.txt") == b"entry-000000002\n"
+          PY
       - name: Machine contracts and completions
         shell: bash
         run: |

@@ -81,6 +81,12 @@ covers every v0.1 format and adversarial empty, control-character, NUL, invalid,
 and near-miss inputs; it is explicitly not a substitute for the broader
 real-world corpus required by the v1.0 gate.
 
+Performance observations use deterministic 10,000-entry complete and
+100,000-entry bounded ZIP workloads. The
+[benchmark methodology](benchmarks/README.md) documents the environment,
+measurements, and the distinction between the current raw baseline and future
+v1.0 regression thresholds.
+
 `inspect` recursively opens supported containers:
 
 ```bash
