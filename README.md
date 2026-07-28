@@ -75,6 +75,12 @@ blobdive --format json detect artifact.dat \
   --timeout 10s
 ```
 
+Detection behavior is scored against the public
+[v0.1 synthetic corpus](tests/fixtures/detection/README.md). The baseline
+covers every v0.1 format and adversarial empty, control-character, NUL, invalid,
+and near-miss inputs; it is explicitly not a substitute for the broader
+real-world corpus required by the v1.0 gate.
+
 `inspect` recursively opens supported containers:
 
 ```bash

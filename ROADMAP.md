@@ -10,7 +10,10 @@
 
 ## 0.2 — corpus and format depth
 
-- public detection/adversarial fixture corpus with accuracy metrics
+- [x] publish a synthetic v0.1 detection/adversarial baseline corpus with
+  reproducible accuracy metrics
+- expand the baseline with licensed real-world and structurally malformed
+  samples before using it as v1.0 evidence
 - richer executable and package-container metadata
 - input streaming design that preserves deterministic references
 - better Unicode/raw-name presentation
