@@ -58,3 +58,8 @@ Dependabot monitors Rust and GitHub Actions dependencies. CI checks
 `Cargo.lock` against RustSec advisories. Tagged releases use signed annotated
 tags and include checksums, CycloneDX SBOMs, and GitHub/Sigstore attestations.
 See [RELEASING.md](RELEASING.md).
+
+Pull requests are checked with GitHub Dependency Review and fail when they
+introduce a dependency with a known moderate-or-higher-severity vulnerability.
+A weekly OpenSSF Scorecard analysis publishes authenticated results and uploads
+SARIF findings to GitHub code scanning.
