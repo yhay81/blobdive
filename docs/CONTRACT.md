@@ -24,6 +24,15 @@ text.
 
 Human output is not a compatibility API.
 
+## Detection baseline
+
+The [v0.1 detection corpus](../tests/fixtures/detection/README.md) freezes
+extension-independent minimal signatures and negative near-misses. Text
+detection requires a nonempty UTF-8 sample and rejects control characters other
+than tab, carriage return, and newline. The checked-in scorer recomputes all
+published counts, supported-archive precision and recall, and negative-case
+specificity.
+
 ## Artifact nodes
 
 Each node contains:

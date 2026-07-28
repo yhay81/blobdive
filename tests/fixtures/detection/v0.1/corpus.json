@@ -1,0 +1,178 @@
+{
+  "schema_version": "blobdive.detection-corpus.v1",
+  "provenance": {
+    "kind": "synthetic_minimal_signatures",
+    "license": "MIT",
+    "extension_independent": true
+  },
+  "cases": [
+    {
+      "id": "zip-local-header",
+      "class": "supported_archive",
+      "payload": {"encoding": "hex", "data": "504b03047061796c6f6164"},
+      "expected": {"format": "zip", "media_type": "application/zip", "confidence": 1.0, "source_adapter": "builtin.zip"}
+    },
+    {
+      "id": "zip-empty-directory",
+      "class": "supported_archive",
+      "payload": {"encoding": "hex", "data": "504b0506"},
+      "expected": {"format": "zip", "media_type": "application/zip", "confidence": 1.0, "source_adapter": "builtin.zip"}
+    },
+    {
+      "id": "gzip-deflate",
+      "class": "supported_archive",
+      "payload": {"encoding": "hex", "data": "1f8b087061796c6f6164"},
+      "expected": {"format": "gzip", "media_type": "application/gzip", "confidence": 1.0, "source_adapter": "builtin.gzip"}
+    },
+    {
+      "id": "tar-valid-checksum",
+      "class": "supported_archive",
+      "payload": {"encoding": "gnu_tar_header", "name": "fixture.txt"},
+      "expected": {"format": "tar", "media_type": "application/x-tar", "confidence": 0.99, "source_adapter": "builtin.tar"}
+    },
+    {
+      "id": "elf",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "7f454c467061796c6f6164"},
+      "expected": {"format": "elf", "media_type": "application/x-elf", "confidence": 1.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "mach-o-64-big-endian",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "feedfacf7061796c6f6164"},
+      "expected": {"format": "mach_o", "media_type": "application/x-mach-binary", "confidence": 1.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "pe-dos-header",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "4d5a7061796c6f6164"},
+      "expected": {"format": "pe", "media_type": "application/vnd.microsoft.portable-executable", "confidence": 0.9, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "pdf",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "255044462d312e37"},
+      "expected": {"format": "pdf", "media_type": "application/pdf", "confidence": 1.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "sqlite",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "53514c69746520666f726d617420330072657374"},
+      "expected": {"format": "sqlite", "media_type": "application/vnd.sqlite3", "confidence": 1.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "png",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "89504e470d0a1a0a"},
+      "expected": {"format": "png", "media_type": "image/png", "confidence": 1.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "jpeg",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "ffd8ff"},
+      "expected": {"format": "jpeg", "media_type": "image/jpeg", "confidence": 0.99, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "gif89a",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "474946383961"},
+      "expected": {"format": "gif", "media_type": "image/gif", "confidence": 1.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "gif87a",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "474946383761"},
+      "expected": {"format": "gif", "media_type": "image/gif", "confidence": 1.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "webp",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "524946460000000057454250"},
+      "expected": {"format": "webp", "media_type": "image/webp", "confidence": 1.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "tiff-little-endian",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "49492a00"},
+      "expected": {"format": "tiff", "media_type": "image/tiff", "confidence": 1.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "flac",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "664c6143"},
+      "expected": {"format": "flac", "media_type": "audio/flac", "confidence": 1.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "wav",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "524946460000000057415645"},
+      "expected": {"format": "wav", "media_type": "audio/wav", "confidence": 1.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "mp3-id3",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "494433"},
+      "expected": {"format": "mp3", "media_type": "audio/mpeg", "confidence": 0.85, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "mp3-frame-sync",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "ffe0"},
+      "expected": {"format": "mp3", "media_type": "audio/mpeg", "confidence": 0.85, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "mp4-iso-bmff",
+      "class": "detection_only",
+      "payload": {"encoding": "hex", "data": "000000186674797069736f6d"},
+      "expected": {"format": "mp4", "media_type": "video/mp4", "confidence": 0.95, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "ascii-text",
+      "class": "text",
+      "payload": {"encoding": "hex", "data": "706c61696e207574662d3820746578740a"},
+      "expected": {"format": "text", "media_type": "text/plain", "confidence": 0.8, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "unicode-text",
+      "class": "text",
+      "payload": {"encoding": "hex", "data": "e38193e38293e381abe381a1e381af0a"},
+      "expected": {"format": "text", "media_type": "text/plain", "confidence": 0.8, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "invalid-binary",
+      "class": "negative",
+      "payload": {"encoding": "hex", "data": "ff00fe"},
+      "expected": {"format": "unknown", "media_type": "application/octet-stream", "confidence": 0.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "empty",
+      "class": "negative",
+      "payload": {"encoding": "hex", "data": ""},
+      "expected": {"format": "unknown", "media_type": "application/octet-stream", "confidence": 0.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "utf8-controls",
+      "class": "negative",
+      "payload": {"encoding": "hex", "data": "0102"},
+      "expected": {"format": "unknown", "media_type": "application/octet-stream", "confidence": 0.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "near-zip",
+      "class": "negative",
+      "payload": {"encoding": "hex", "data": "504b0305"},
+      "expected": {"format": "unknown", "media_type": "application/octet-stream", "confidence": 0.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "truncated-png",
+      "class": "negative",
+      "payload": {"encoding": "hex", "data": "89504e470d0a1a"},
+      "expected": {"format": "unknown", "media_type": "application/octet-stream", "confidence": 0.0, "source_adapter": "builtin.magic"}
+    },
+    {
+      "id": "nul-bearing-text",
+      "class": "negative",
+      "payload": {"encoding": "hex", "data": "706c61696e0074657874"},
+      "expected": {"format": "unknown", "media_type": "application/octet-stream", "confidence": 0.0, "source_adapter": "builtin.magic"}
+    }
+  ]
+}

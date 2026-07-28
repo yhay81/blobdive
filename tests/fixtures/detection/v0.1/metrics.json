@@ -1,0 +1,20 @@
+{
+  "schema_version": "blobdive.detection-metrics.v1",
+  "total_cases": 28,
+  "correct_cases": 28,
+  "overall_accuracy": 1.0,
+  "supported_archive": {
+    "positive_cases": 4,
+    "true_positives": 4,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "precision": 1.0,
+    "recall": 1.0
+  },
+  "negative": {
+    "cases": 6,
+    "true_negatives": 6,
+    "false_positives": 0,
+    "specificity": 1.0
+  }
+}

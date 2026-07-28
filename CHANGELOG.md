@@ -5,8 +5,15 @@ for CLI and machine-contract compatibility.
 
 ## [Unreleased]
 
+### Added
+
+- Public 28-case synthetic v0.1 detection corpus with reproducible metrics for
+  all supported signatures, alternate signatures, and adversarial near-misses.
+
 ### Changed
 
+- Empty input and control-character-only UTF-8 are now classified as `unknown`
+  instead of `text`.
 - Updated the README status after the public 0.1.0 release.
 - Defined measurable v1.0 compatibility, corpus accuracy, isolation, security,
   performance, delivery, maintenance, contribution, and repeat-adoption gates.

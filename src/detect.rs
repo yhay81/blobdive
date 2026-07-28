@@ -137,7 +137,11 @@ fn is_mach_o(data: &[u8]) -> bool {
 
 fn looks_like_text(data: &[u8]) -> bool {
     let sample = &data[..data.len().min(8192)];
-    !sample.contains(&0) && std::str::from_utf8(sample).is_ok()
+    !sample.is_empty()
+        && std::str::from_utf8(sample).is_ok_and(|text| {
+            text.chars()
+                .all(|character| !character.is_control() || matches!(character, '\n' | '\r' | '\t'))
+        })
 }
 
 fn looks_like_tar(data: &[u8]) -> bool {
@@ -186,5 +190,7 @@ mod tests {
             ArtifactFormat::Sqlite
         );
         assert_eq!(detect(b"plain utf-8").format, ArtifactFormat::Text);
+        assert_eq!(detect(b"").format, ArtifactFormat::Unknown);
+        assert_eq!(detect(&[0x01, 0x02]).format, ArtifactFormat::Unknown);
     }
 }

@@ -26,6 +26,11 @@ jobs:
         run: cargo clippy --all-targets --locked -- -D warnings
       - name: Package manifest
         run: cargo package --locked --allow-dirty
+      - name: Detection corpus
+        shell: bash
+        run: |
+          jq -e . tests/fixtures/detection/v0.1/corpus.json >/dev/null
+          jq -e . tests/fixtures/detection/v0.1/metrics.json >/dev/null
       - name: Machine contracts and completions
         shell: bash
         run: |
@@ -45,15 +50,16 @@ jobs:
               SUPPORT.md ADOPTERS.md docs/*.md; do
             test -s "${file}"
           done
-          while IFS= read -r link; do
-            target="${link%%#*}"
-            test -z "${target}" || test -e "${target}"
-          done < <(
-            grep -RhoE '\]\([A-Za-z0-9_./-]+\.md(#[^)]+)?\)' \
-              --include='*.md' . \
-              | sed -E 's/^\]\(([^)#]+)(#[^)]+)?\)$/\1/' \
-              | sort -u
-          )
+          while IFS= read -r file; do
+            while IFS= read -r link; do
+              target="${link%%#*}"
+              test -z "${target}" || test -e "$(dirname "${file}")/${target}"
+            done < <(
+              grep -oE '\]\([A-Za-z0-9_./-]+\.md(#[^)]+)?\)' "${file}" \
+                | sed -E 's/^\]\(([^)#]+)(#[^)]+)?\)$/\1/' \
+                | sort -u
+            )
+          done < <(find . -name '*.md' -not -path './target/*' -print)
 
   audit:
     runs-on: ubuntu-latest
