@@ -5,6 +5,10 @@ for CLI and machine-contract compatibility.
 
 ## [Unreleased]
 
+### Changed
+
+- Updated the README status after the public 0.1.0 release.
+
 ## [0.1.0] - 2026-07-28
 
 ### Added
