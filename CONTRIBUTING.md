@@ -23,6 +23,10 @@ cd blobdive
 cargo test --all-targets --locked
 ```
 
+Artifact detection and nested-reference parsing are continuously fuzzed. See
+[FUZZING.md](FUZZING.md) for the reproducible local command and crash-handling
+rules.
+
 ## Making a change
 
 1. Open an issue first for a new structural adapter, schema/reference change,

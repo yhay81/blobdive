@@ -10,7 +10,7 @@ homepage = "https://github.com/yhay81/blobdive"
 readme = "README.md"
 keywords = ["archive", "inspection", "supply-chain", "cli"]
 categories = ["command-line-utilities", "filesystem"]
-exclude = [".github/**"]
+exclude = ["/.github/**", "/.clusterfuzzlite/**", "/.dockerignore", "/fuzz/**"]
 
 [dependencies]
 base64 = "0.23.0"
