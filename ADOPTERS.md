@@ -12,8 +12,20 @@ with:
 - artifact types and approximate size/depth;
 - commands and budgets used;
 - supported operating systems;
+- the review, routing, quarantine, or extraction decision BlobDive improved;
+- whether use repeated after at least 30 days;
+- misdetections, ambiguous results, or missing format evidence encountered;
 - a link to public integration evidence when available;
 - whether the entry may be referenced in release notes.
 
 Private users may open a discussion without identifying details. Aggregate
 adoption claims will not be added without permission.
+
+Never submit confidential artifacts, credentials, private paths, malware
+samples that cannot be shared safely, or unreviewed output.
+
+## Verified adopters
+
+| Adopter | Artifact workflow | Platform | Repeat use | Evidence |
+| --- | --- | --- | --- | --- |
+| _None yet_ | — | — | — | — |
