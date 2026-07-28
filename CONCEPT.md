@@ -1,148 +1,86 @@
-# BlobDive concept
+# BlobDive concept and scope
 
-## One-line thesis
+## Thesis
 
 BlobDive gives humans and software agents one bounded, recursive interface for
-understanding unfamiliar software and media artifacts.
+understanding unfamiliar software artifacts.
 
 ## Problem
 
-Agents routinely encounter archives, packages, executables, PDFs, databases,
-images, audio, and video. Today they must guess a sequence of format-specific
-tools, learn different output contracts, and manually connect nested content.
-That wastes tokens and creates safety problems:
+Format-specific inspection tools have unrelated output contracts. Extraction
+can overwrite paths or follow unsafe names, compressed inputs can expand
+dramatically, nested content loses provenance, and parser failures are often
+reported as unstructured text.
 
-- archive extraction can overwrite files or follow unsafe paths;
-- compressed inputs can expand without a bound;
-- text output is inconsistent and often enormous;
-- nested artifacts lose provenance;
-- a failed parser can terminate the entire investigation.
+The primary job is:
 
-## Target users and jobs
-
-- Coding and security agents inspecting build outputs and attachments.
-- Maintainers triaging unfamiliar repository artifacts.
-- Release and supply-chain tooling.
-- Automation that needs metadata without full extraction.
-
-The primary job is: **identify an artifact, inspect its structure, and traverse
-only the relevant children under explicit budgets.**
+> Identify an artifact, inspect its structure, and traverse only relevant
+> children under explicit budgets.
 
 ## Product principles
 
-1. Inspection does not extract or modify by default.
-2. Every child has a stable reference and provenance.
-3. Depth, entries, bytes, time, and decompression ratio are bounded.
-4. Type detection reports evidence and confidence.
-5. Truncation and unsupported features are data, not prose warnings.
-6. Adapters fail in isolation.
-7. One compact envelope covers every format.
+1. Inspection never extracts, modifies, decrypts, or executes content.
+2. Every traversed child has a deterministic reference and root provenance.
+3. Source bytes, decompressed bytes, depth, entries, output, ratio, and elapsed
+   time are bounded.
+4. Detection reports evidence and confidence.
+5. Truncation and unsupported features are data, not prose-only warnings.
+6. One compact envelope covers every supported format.
+7. Claims never exceed what the implementation and tests demonstrate.
 
-## Proposed command contract
+## Implemented 0.1 surface
 
 ```text
-blobdive schema --brief --format json
-blobdive detect release.bin --format json
-blobdive inspect release.zip --depth 2 --max-entries 200 --format json
-blobdive list 'artifact://<digest>!/path/to/child' --format json
-blobdive read 'artifact://<digest>!/manifest.json' --max-bytes 65536
-blobdive adapters --format json
+blobdive detect <source>
+blobdive inspect <source>
+blobdive list <source> <artifact-ref>
+blobdive read <source> <artifact-ref>
+blobdive adapters
+blobdive schema
+blobdive completions
 ```
 
-References are opaque identifiers, not filesystem paths. A caller can pass a
-reference back to BlobDive without learning adapter-specific syntax.
+The archive-first MVP provides structural adapters for ZIP, TAR, and GZIP.
+Magic detection also identifies common executable, document, database, image,
+audio, video, text, and unknown inputs. Detection-only formats do not pretend
+to expose structure.
 
-## Common artifact envelope
+References are anchored to the complete root SHA-256 and encode adapter entry
+indexes. The source remains caller-owned and must be supplied again for
+`list`/`read`; BlobDive keeps no hidden cache.
 
-Every inspected node has:
+## Explicit 0.1 boundaries
 
-```json
-{
-  "ref": "artifact://...",
-  "type": "application/...",
-  "size": 1234,
-  "digest": "sha256:...",
-  "attributes": {},
-  "children": [],
-  "truncated": false,
-  "confidence": 0.99,
-  "source_adapter": "..."
-}
-```
+- Local regular files only; standard input and remote URLs are deferred.
+- ZIP support is limited to stored and deflate compression compiled into the
+  binary.
+- No artifact is materialized on disk.
+- No malware classification or claim that content is safe.
+- No rich ELF/Mach-O/PE, PDF, SQLite, image, audio, or video metadata yet.
+- No third-party plugins.
+- Built-in parsers are memory- and byte-bounded but in-process. The wall-clock
+  limit is cooperative, not an operating-system kill deadline.
 
-Additional fields record detection evidence, warnings, parser version, parent
-relationship, and which budget stopped traversal. Format-specific metadata lives
-under versioned `attributes` namespaces.
+## Expansion gates
 
-## Safety and resource model
+A new structural adapter must add:
 
-Every operation accepts budgets for:
+1. signature evidence independent of filename extension;
+2. a versioned attribute namespace;
+3. unsafe-path/link/encryption semantics where applicable;
+4. adversarial entry, byte, ratio, time, and output fixtures;
+5. deterministic reference resolution;
+6. documented parser and platform boundaries.
 
-- recursive depth;
-- entries and nodes;
-- bytes read and bytes returned;
-- wall-clock and CPU time;
-- decompressed bytes and compression ratio;
-- per-adapter memory.
-
-Archive paths are normalized and never materialized during inspection. Symlinks,
-device entries, encrypted content, overlapping ranges, and suspicious expansion
-are reported explicitly. Risky parsers should run in isolated worker processes.
-
-## Initial adapters
-
-Version 0.1 will prioritize:
-
-- tar, zip, gzip, and common package containers;
-- ELF, Mach-O, and PE executables;
-- PDF structure and metadata;
-- SQLite schema and bounded table summaries;
-- common image metadata;
-- audio and video stream metadata through a constrained backend.
-
-Adapters are selected from detection evidence rather than filename extension.
-
-## Initial scope
-
-- Local files and standard input.
-- Detection, metadata inspection, child listing, and bounded reads.
-- Recursive typed artifact graphs.
-- Versioned JSON and NDJSON output.
-- Content digests and deterministic references.
-- Crash-isolated built-in adapters.
-
-## Non-goals
-
-- Malware detection or a claim that an artifact is safe.
-- Modifying, converting, or repairing artifacts.
-- Unbounded extraction.
-- Rendering full office documents.
-- Replacing specialist reverse-engineering tools.
-- Downloading remote URLs by default.
-
-## Differentiation and defensibility
-
-The opportunity is a universal artifact protocol, not a shallow wrapper around
-`file`. High-quality detection, safe traversal, common provenance, and a growing
-adapter corpus create compounding value. Other tools can build on the graph
-without teaching agents a new CLI for each format.
+Process isolation must precede formats with materially larger parser attack
+surfaces or external backends. Third-party plugins remain deferred until
+capability declarations, isolation, and schema compatibility are specified.
 
 ## Success measures
 
-- Format and nested-container coverage in a public corpus.
-- Detection accuracy independent of extensions.
-- Zero budget violations in adversarial fixtures.
-- Parser crash containment rate.
-- Median tokens and commands needed to answer artifact questions.
-- Number of downstream tools consuming the common envelope.
-
-## Key risks and open questions
-
-- Parser attack surface grows with format coverage.
-- Metadata schemas can become an unstable union of adapter quirks.
-- Some formats require expensive or stateful parsing.
-- Digesting large artifacts conflicts with low-latency inspection.
-- A plugin system expands adoption but also the trust boundary.
-
-The project should delay third-party in-process plugins until isolation,
-capability declarations, and schema compatibility are well specified.
+- Zero observed budget or extraction violations in adversarial fixtures.
+- Detection accuracy on a public extension-independent corpus.
+- Stable schema compatibility across minor releases.
+- Median commands and output bytes needed to answer nested-artifact questions.
+- Downstream tools consuming the common envelope.
+- Opt-in adopters and external adapter contributions.

@@ -1,0 +1,33 @@
+name: Feature request
+description: Propose a scoped adapter, contract, or integration improvement.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: Describe the artifact workflow and why the current contract is insufficient.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Smallest complete scope
+      description: Include expected commands, fields, format evidence, and explicit non-goals.
+    validations:
+      required: true
+  - type: textarea
+    id: budgets
+    attributes:
+      label: Budgets and adversarial fixtures
+      description: Describe size, depth, entry, expansion, parser, output, and time implications.
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Security and compatibility risks
+      description: Could this extract, execute, follow paths/links, expose content, expand the parser trust boundary, or break a contract?
+    validations:
+      required: true

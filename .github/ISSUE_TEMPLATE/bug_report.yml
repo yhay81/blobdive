@@ -1,0 +1,49 @@
+name: Bug report
+description: Report reproducible detection, traversal, budget, reference, or parser behavior.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Do not post malware, secrets, private documents, or unredacted read output. Use private vulnerability reporting for security issues.
+  - type: input
+    id: version
+    attributes:
+      label: BlobDive version
+      placeholder: blobdive 0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Operating system
+      options: [Linux, macOS, Windows, Other]
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Exact redacted command and budgets
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: artifact
+    attributes:
+      label: Minimal synthetic artifact recipe
+      description: Provide code or standard tool commands that generate the fixture; do not attach sensitive content.
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed structured result
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
