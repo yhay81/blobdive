@@ -13,6 +13,8 @@ for CLI and machine-contract compatibility.
   and Intel, and Windows x86_64 using the published instructions.
 - Enforced the published v1.0 10,000-entry latency and 100,000-entry bounded
   memory thresholds from 20-sample benchmark evidence on Ubuntu 24.04.
+- Published a deterministic 90-case adversarial archive corpus with per-class
+  detection and sandbox-write metrics.
 
 ### Fixed
 
@@ -21,6 +23,8 @@ for CLI and machine-contract compatibility.
 - Enforced depth and shared entry budgets while resolving `list` and `read`
   references, including sequential entries scanned during TAR lookup, before
   opening an over-budget child.
+- Read ZIP entry metadata before requesting content so encrypted entries are
+  reported and refused without attempting decryption.
 
 ## [0.3.0] - 2026-07-29
 
