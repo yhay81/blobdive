@@ -161,7 +161,7 @@ jq -n \
       inspect_100k_bounded_peak_rss_mib:
         ($inspect_100k_metrics[0].max_rss_kib / 1024)
     },
-    threshold_status: "observation_only"
+    threshold_status: "raw_sample"
   }' >"${result_path}"
 
 jq -e '
