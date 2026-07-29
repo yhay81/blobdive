@@ -48,6 +48,13 @@ correct classification, enforced bounds, or real downstream use.
 - New complex or native parsers are enabled only after the parser-isolation
   protocol contains their crashes, hangs, memory, and wall-clock use.
 
+Current evidence: v0.2 and v0.3 provide two released compatibility cycles. The
+current v0.3 reader accepts the digest-pinned v0.1 detection and reference
+corpus unchanged on every CI operating system. The v0.2 and v0.3 release notes
+record contract preservation; no migration is required. Future contract
+versions must add golden documents and an explicit migration or no-migration
+decision.
+
 ### Correctness and security
 
 - The published labeled corpus has 100% precision and recall for every format
