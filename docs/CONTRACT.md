@@ -45,9 +45,11 @@ Each node contains:
 - findings;
 - `{truncated, reasons}`.
 
-`digest` exists only when BlobDive completely read that node. Archive metadata
-nodes blocked by a budget, encryption, entry type, or parser failure have no
-digest.
+`digest` exists only when BlobDive completely read that node. For ZIP entries,
+complete reading includes reaching the entry EOF and validating its CRC-32;
+an underdeclared size or checksum failure is never assigned a digest. Archive
+metadata nodes blocked by a budget, encryption, entry type, or parser failure
+have no digest.
 
 ## Truncation versus errors
 

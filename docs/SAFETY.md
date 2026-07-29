@@ -16,6 +16,7 @@
 - References fail closed after root-byte changes.
 
 Tests exercise parent traversal names, compressed expansion, malformed ZIP,
+ZIP payload checksums and declared sizes, exact decompression boundaries,
 nested references, stale references, entry/output/time limits, and no
 materialization.
 

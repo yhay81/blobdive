@@ -16,6 +16,9 @@ for CLI and machine-contract compatibility.
 
 ### Fixed
 
+- Required archive entry EOF before assigning a digest, so ZIP payload CRC
+  failures and underdeclared sizes fail closed while valid GZIP payloads that
+  exactly meet a decompression limit remain complete.
 - Rejected performance evidence with a non-canonical commit identity,
   incomplete runner metadata, a non-raw sample marker, or reused sample paths.
 - Enforced depth and shared entry budgets while resolving `list` and `read`

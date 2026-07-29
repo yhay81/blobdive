@@ -803,9 +803,6 @@ fn read_bounded(
             Ok(count) => {
                 bytes.extend_from_slice(&buffer[..count]);
                 remaining = remaining.saturating_sub(usize_to_u64(count));
-                if expected_size.is_some_and(|expected| expected == usize_to_u64(bytes.len())) {
-                    return ReadAttempt::Complete(bytes);
-                }
             }
             Err(error) => return ReadAttempt::Failed(error.to_string()),
         }
@@ -815,7 +812,29 @@ fn read_bounded(
     } else {
         TruncationReason::MaxCompressionRatio
     };
-    ReadAttempt::Truncated(bytes, reason)
+    if budget.time_exhausted() {
+        return ReadAttempt::Truncated(bytes, TruncationReason::Timeout);
+    }
+    let bytes_read = usize_to_u64(bytes.len());
+    if expected_size.is_some_and(|expected| expected > bytes_read) {
+        return ReadAttempt::Truncated(bytes, reason);
+    }
+    if expected_size.is_some_and(|expected| expected < bytes_read) {
+        return ReadAttempt::Failed("entry exceeded its declared uncompressed size".to_owned());
+    }
+
+    // A non-empty read at the boundary distinguishes a genuinely complete
+    // stream from an underdeclared or over-budget stream. Reading once more
+    // also lets wrappers such as ZIP's CRC reader validate at EOF.
+    let mut probe = [0_u8; 1];
+    match reader.read(&mut probe) {
+        Ok(0) => ReadAttempt::Complete(bytes),
+        Ok(_) if expected_size.is_some() => {
+            ReadAttempt::Failed("entry exceeded its declared uncompressed size".to_owned())
+        }
+        Ok(_) => ReadAttempt::Truncated(bytes, reason),
+        Err(error) => ReadAttempt::Failed(error.to_string()),
+    }
 }
 
 fn read_source(
