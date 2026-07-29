@@ -34,6 +34,8 @@ is involved.
     output limit.
 
 Counters are global to the invocation. A nested archive cannot reset a budget.
+Concatenated GZIP members form one logical payload and share the same
+decompression, compression-ratio, and deadline budgets.
 
 ## Reference model
 

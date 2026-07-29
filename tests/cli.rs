@@ -419,6 +419,107 @@ fn gzip_payload_at_the_exact_decompression_limit_is_complete() -> TestResult {
 }
 
 #[test]
+fn concatenated_gzip_members_are_fully_read_and_verified() -> TestResult {
+    let temp = TempDir::new()?;
+    let first_payload = b"benign first member\n";
+    let second_payload = b"previously hidden second member\n";
+    let first = gzip_bytes("first.txt", first_payload)?;
+    let second = gzip_bytes("second.txt", second_payload)?;
+    let mut concatenated = first;
+    concatenated.extend_from_slice(&second);
+    let source = write_fixture(temp.path(), "concatenated.gz", &concatenated)?;
+
+    let result = success_json(&[
+        "--format",
+        "json",
+        "inspect",
+        path_text(&source)?,
+        "--depth",
+        "1",
+    ])?;
+    let child = &result["root"]["children"][0];
+    let expected_payload = [first_payload.as_slice(), second_payload.as_slice()].concat();
+    assert_eq!(child["display_name"], "first.txt");
+    assert_eq!(child["size"], expected_payload.len());
+    assert!(child["digest"].is_string());
+    assert_eq!(child["truncation"]["truncated"], false);
+    assert_eq!(
+        child["attributes"]["gzip"]["compressed_size"],
+        concatenated.len()
+    );
+
+    let child_ref = child["ref"]
+        .as_str()
+        .ok_or_else(|| io::Error::other("concatenated GZIP child ref missing"))?;
+    let read = success_json(&["--format", "json", "read", path_text(&source)?, child_ref])?;
+    assert_eq!(read["total_bytes"], expected_payload.len());
+    assert_eq!(read["truncated"], false);
+    assert_eq!(
+        BASE64.decode(read["data"].as_str().unwrap_or_default())?,
+        expected_payload
+    );
+
+    let bounded = success_json(&[
+        "--format",
+        "json",
+        "inspect",
+        path_text(&source)?,
+        "--depth",
+        "1",
+        "--max-decompressed-bytes",
+        &first_payload.len().to_string(),
+        "--max-compression-ratio",
+        "1000",
+    ])?;
+    let bounded_child = &bounded["root"]["children"][0];
+    assert!(bounded_child["digest"].is_null());
+    assert_eq!(
+        bounded_child["truncation"]["reasons"][0],
+        "max_decompressed_bytes"
+    );
+    assert_eq!(bounded["usage"]["decompressed_bytes"], first_payload.len());
+
+    let mut corrupt_second_member = concatenated;
+    let second_crc = corrupt_second_member
+        .len()
+        .checked_sub(8)
+        .ok_or_else(|| io::Error::other("GZIP trailer missing"))?;
+    corrupt_second_member[second_crc] ^= 0xff;
+    let corrupt_source = write_fixture(
+        temp.path(),
+        "corrupt-second-member.gz",
+        &corrupt_second_member,
+    )?;
+    let corrupt_result = success_json(&[
+        "--format",
+        "json",
+        "inspect",
+        path_text(&corrupt_source)?,
+        "--depth",
+        "1",
+    ])?;
+    let corrupt_child = &corrupt_result["root"]["children"][0];
+    assert!(corrupt_child["digest"].is_null());
+    assert_eq!(corrupt_child["truncation"]["reasons"][0], "adapter_failure");
+    assert_eq!(corrupt_child["findings"][0]["code"], "entry_read_failed");
+
+    let corrupt_ref = corrupt_child["ref"]
+        .as_str()
+        .ok_or_else(|| io::Error::other("corrupt GZIP child ref missing"))?;
+    let corrupt_read = invoke(&[
+        "--format",
+        "json",
+        "read",
+        path_text(&corrupt_source)?,
+        corrupt_ref,
+    ])?;
+    assert_eq!(corrupt_read.status.code(), Some(1));
+    let error: Value = serde_json::from_slice(&corrupt_read.stderr)?;
+    assert_eq!(error["error"]["kind"], "archive");
+    Ok(())
+}
+
+#[test]
 fn nested_references_are_deterministic_readable_and_integrity_checked() -> TestResult {
     let temp = TempDir::new()?;
     let inner = zip_bytes(&[("manifest.txt", b"nested payload")])?;

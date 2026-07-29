@@ -7,7 +7,7 @@ use std::{
 };
 
 use base64::{engine::general_purpose::STANDARD as BASE64, Engine as _};
-use flate2::read::GzDecoder;
+use flate2::read::MultiGzDecoder;
 use serde_json::json;
 
 use crate::{
@@ -514,7 +514,7 @@ fn inspect_gzip(
         return outcome;
     }
     let entry_reference = child_reference(parent_reference, ReferenceAdapter::Gzip, 0);
-    let mut decoder = GzDecoder::new(data);
+    let mut decoder = MultiGzDecoder::new(data);
     let raw_name = decoder
         .header()
         .and_then(|header| header.filename())
@@ -751,7 +751,7 @@ fn extract_gzip_step(data: &[u8], index: usize, budget: &mut Budget) -> Result<V
     }
     claim_reference_entry(budget)?;
     let allowance = budget.decompression_allowance(usize_to_u64(data.len()));
-    let mut decoder = GzDecoder::new(data);
+    let mut decoder = MultiGzDecoder::new(data);
     finish_extraction(read_bounded(&mut decoder, allowance, None, budget), budget)
 }
 
