@@ -1,0 +1,43 @@
+{
+  "schema_version": "benchmark.thresholds.v1",
+  "benchmark_schema_version": "blobdive.benchmark.v1",
+  "runner": {
+    "os": "Linux",
+    "arch": "x86_64",
+    "image": "ubuntu24"
+  },
+  "warmup_count": 1,
+  "sample_count": 20,
+  "metrics": [
+    {
+      "id": "detect_plus_inspect_10k_wall_p95",
+      "description": "Detection plus complete top-level inspection of the 10,000-entry ZIP",
+      "source": {
+        "kind": "derived",
+        "field": "detect_plus_inspect_10k_wall_seconds"
+      },
+      "statistic": "p95",
+      "maximum": 2.0,
+      "unit": "seconds",
+      "regression": {
+        "max_ratio": 1.5,
+        "absolute_tolerance": 0.1
+      }
+    },
+    {
+      "id": "inspect_100k_bounded_peak_rss_max",
+      "description": "Maximum peak resident memory for the bounded 100,000-entry fixture",
+      "source": {
+        "kind": "derived",
+        "field": "inspect_100k_bounded_peak_rss_mib"
+      },
+      "statistic": "max",
+      "maximum": 256.0,
+      "unit": "MiB",
+      "regression": {
+        "max_ratio": 1.5,
+        "absolute_tolerance": 16.0
+      }
+    }
+  ]
+}
