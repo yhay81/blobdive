@@ -147,9 +147,11 @@ entry-resolution budget.
 | UTF-8 text and unknown bytes | yes | no |
 
 Run `blobdive --format json adapters` for the machine-readable capability
-list. Unsupported compression, encrypted ZIP entries, links, unsafe paths, and
-malformed child entries are reported; BlobDive does not silently extract,
-decrypt, follow, or execute them.
+list. Unsupported compression, encrypted ZIP entries, links, unsafe paths,
+malformed child entries, and ZIP payload checksum or declared-size failures are
+reported. Concatenated GZIP members are read as one payload and every member is
+checksum-verified; BlobDive does not silently extract, decrypt, follow, or
+execute them.
 
 ## Machine contract
 
