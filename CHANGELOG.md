@@ -68,6 +68,7 @@ for CLI and machine-contract compatibility.
   cross-platform tests.
 - OSS governance, security, support, contribution, and signed release policy.
 
-[Unreleased]: https://github.com/yhay81/blobdive/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/yhay81/blobdive/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/yhay81/blobdive/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/yhay81/blobdive/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/yhay81/blobdive/releases/tag/v0.1.0
