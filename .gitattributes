@@ -1,1 +1,2 @@
 tests/fixtures/detection/** text eol=lf
+tests/fixtures/adversarial/** text eol=lf

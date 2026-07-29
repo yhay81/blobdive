@@ -338,7 +338,7 @@ fn inspect_zip(
             outcome.truncation.add(TruncationReason::MaxEntries);
             break;
         }
-        let mut entry = match archive.by_index(index) {
+        let entry = match archive.by_index_raw(index) {
             Ok(entry) => entry,
             Err(error) => {
                 outcome.findings.push(adapter_failure("zip entry", &error));
@@ -365,6 +365,7 @@ fn inspect_zip(
             "unix_mode": entry.unix_mode(),
             "entry_index": index,
         });
+        drop(entry);
 
         let mut child = if is_dir {
             metadata_only_node(
@@ -386,6 +387,14 @@ fn inspect_zip(
                 budget,
             )
         } else {
+            let mut entry = match archive.by_index(index) {
+                Ok(entry) => entry,
+                Err(error) => {
+                    outcome.findings.push(adapter_failure("zip entry", &error));
+                    outcome.truncation.add(TruncationReason::AdapterFailure);
+                    continue;
+                }
+            };
             entry_attempt_to_node(
                 read_bounded(&mut entry, size, Some(size), budget),
                 &entry_reference,
@@ -702,17 +711,21 @@ fn extract_zip_step(data: &[u8], index: usize, budget: &mut Budget) -> Result<Ve
     }
     claim_reference_entry(budget)?;
     let mut archive = zip::ZipArchive::new(Cursor::new(data))?;
-    let mut entry = archive
-        .by_index(index)
+    let metadata = archive
+        .by_index_raw(index)
         .map_err(|_| BlobError::ReferenceNotFound)?;
-    if entry.is_dir() {
+    if metadata.is_dir() {
         return Err(BlobError::ReferenceNotFound);
     }
-    if entry.encrypted() {
+    if metadata.encrypted() {
         return Err(BlobError::Unsupported(
             "encrypted ZIP entries are not decrypted".to_owned(),
         ));
     }
+    drop(metadata);
+    let mut entry = archive
+        .by_index(index)
+        .map_err(|_| BlobError::ReferenceNotFound)?;
     let size = entry.size();
     let compressed_size = entry.compressed_size();
     if let Some(reason) = budget.decompression_block_reason(compressed_size, size) {

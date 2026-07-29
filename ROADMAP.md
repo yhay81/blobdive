@@ -74,6 +74,13 @@ decision.
   are resolved.
 - No known critical or high-severity vulnerability is open at release time.
 
+Current adversarial evidence publishes 90 deterministic cases, with ten each
+for traversal paths, unsafe links, encryption, truncated structures, tampered
+references, excessive depth, entry counts, expansion ratios, and decompressed
+byte budgets. The independent scorer currently requires 100% detection in
+every class, safe refusal of link and encrypted-entry reads, and zero
+materialized paths in its fixture sandboxes.
+
 ### Performance and bounds
 
 - Detect plus top-level inspect of the published 10,000-entry corpus completes

@@ -18,6 +18,10 @@
 Tests exercise parent traversal names, compressed expansion, malformed ZIP,
 nested references, stale references, entry/output/time limits, and no
 materialization.
+The versioned [adversarial archive
+corpus](../tests/fixtures/adversarial/README.md) aggregates 90 labeled cases
+across all nine v1 hostile-input classes and publishes reproducible per-class
+detection and sandbox-write metrics.
 
 ## Non-guarantees
 

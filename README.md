@@ -84,6 +84,12 @@ covers every v0.1 format and adversarial empty, control-character, NUL, invalid,
 and near-miss inputs; it is explicitly not a substitute for the broader
 real-world corpus required by the v1.0 gate.
 
+Archive safety behavior is scored independently against the
+[v0.1 adversarial corpus](tests/fixtures/adversarial/README.md). Its 90
+synthetic cases cover all nine v1 hostile-input classes with 100% detection,
+including metadata-only refusal for links and encryption, and zero paths
+materialized in the fixture sandboxes.
+
 Performance observations use deterministic 10,000-entry complete and
 100,000-entry bounded ZIP workloads. The
 [benchmark methodology](benchmarks/README.md) documents the environment,
