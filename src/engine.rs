@@ -674,6 +674,9 @@ fn resolve_reference(
     reference: &ArtifactReference,
     budget: &mut Budget,
 ) -> Result<Vec<u8>, BlobError> {
+    if reference.steps.len() > usize::from(budget.limits.max_depth) {
+        return Err(BlobError::ResourceBudget("max_depth".to_owned()));
+    }
     for step in &reference.steps {
         budget.ensure_time()?;
         current = extract_step(&current, *step, budget)?;
@@ -697,6 +700,7 @@ fn extract_zip_step(data: &[u8], index: usize, budget: &mut Budget) -> Result<Ve
     if detect(data).format != ArtifactFormat::Zip {
         return Err(BlobError::ReferenceNotFound);
     }
+    claim_reference_entry(budget)?;
     let mut archive = zip::ZipArchive::new(Cursor::new(data))?;
     let mut entry = archive
         .by_index(index)
@@ -722,20 +726,21 @@ fn extract_tar_step(data: &[u8], index: usize, budget: &mut Budget) -> Result<Ve
         return Err(BlobError::ReferenceNotFound);
     }
     let mut archive = tar::Archive::new(Cursor::new(data));
-    let entries = archive.entries()?;
-    for (candidate_index, entry) in entries.enumerate() {
-        if candidate_index != index {
-            continue;
+    let mut entries = archive.entries()?;
+    for candidate_index in 0..=index {
+        budget.ensure_time()?;
+        claim_reference_entry(budget)?;
+        let mut entry = entries.next().ok_or(BlobError::ReferenceNotFound)??;
+        if candidate_index == index {
+            if !entry.header().entry_type().is_file() {
+                return Err(BlobError::ReferenceNotFound);
+            }
+            let size = entry.size();
+            if let Some(reason) = budget.decompression_block_reason(size, size) {
+                return Err(BlobError::ResourceBudget(format!("{reason:?}")));
+            }
+            return finish_extraction(read_bounded(&mut entry, size, Some(size), budget), budget);
         }
-        let mut entry = entry?;
-        if !entry.header().entry_type().is_file() {
-            return Err(BlobError::ReferenceNotFound);
-        }
-        let size = entry.size();
-        if let Some(reason) = budget.decompression_block_reason(size, size) {
-            return Err(BlobError::ResourceBudget(format!("{reason:?}")));
-        }
-        return finish_extraction(read_bounded(&mut entry, size, Some(size), budget), budget);
     }
     Err(BlobError::ReferenceNotFound)
 }
@@ -744,9 +749,18 @@ fn extract_gzip_step(data: &[u8], index: usize, budget: &mut Budget) -> Result<V
     if index != 0 || detect(data).format != ArtifactFormat::Gzip {
         return Err(BlobError::ReferenceNotFound);
     }
+    claim_reference_entry(budget)?;
     let allowance = budget.decompression_allowance(usize_to_u64(data.len()));
     let mut decoder = GzDecoder::new(data);
     finish_extraction(read_bounded(&mut decoder, allowance, None, budget), budget)
+}
+
+fn claim_reference_entry(budget: &mut Budget) -> Result<(), BlobError> {
+    if budget.visit_entry() {
+        Ok(())
+    } else {
+        Err(BlobError::ResourceBudget("max_entries".to_owned()))
+    }
 }
 
 fn finish_extraction(attempt: ReadAttempt, budget: &mut Budget) -> Result<Vec<u8>, BlobError> {

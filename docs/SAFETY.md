@@ -10,6 +10,9 @@
 - Raw names are preserved as base64 and risky names are flagged.
 - Source, decompression, entry, recursion, output, ratio, and cooperative time
   limits are applied across one invocation.
+- `list` and `read` reject over-depth references before child parsing, and each
+  archive entry examined during reference resolution consumes the shared entry
+  budget.
 - References fail closed after root-byte changes.
 
 Tests exercise parent traversal names, compressed expansion, malformed ZIP,

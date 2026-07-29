@@ -36,6 +36,16 @@ fn success_json(args: &[&str]) -> Result<Value, Box<dyn Error>> {
     Ok(serde_json::from_slice(&output.stdout)?)
 }
 
+fn assert_resource_error(output: &Output, reason: &str) -> TestResult {
+    assert_eq!(output.status.code(), Some(3));
+    let error: Value = serde_json::from_slice(&output.stderr)?;
+    assert_eq!(error["error"]["kind"], "resource_budget");
+    assert!(error["error"]["message"]
+        .as_str()
+        .is_some_and(|message| message.contains(reason)));
+    Ok(())
+}
+
 fn zip_bytes(entries: &[(&str, &[u8])]) -> Result<Vec<u8>, Box<dyn Error>> {
     let cursor = Cursor::new(Vec::new());
     let mut writer = ZipWriter::new(cursor);
@@ -48,12 +58,18 @@ fn zip_bytes(entries: &[(&str, &[u8])]) -> Result<Vec<u8>, Box<dyn Error>> {
 }
 
 fn tar_bytes(name: &str, data: &[u8]) -> Result<Vec<u8>, Box<dyn Error>> {
+    tar_entries_bytes(&[(name, data)])
+}
+
+fn tar_entries_bytes(entries: &[(&str, &[u8])]) -> Result<Vec<u8>, Box<dyn Error>> {
     let mut builder = tar::Builder::new(Vec::new());
-    let mut header = tar::Header::new_gnu();
-    header.set_size(u64::try_from(data.len())?);
-    header.set_mode(0o644);
-    header.set_cksum();
-    builder.append_data(&mut header, name, data)?;
+    for (name, data) in entries {
+        let mut header = tar::Header::new_gnu();
+        header.set_size(u64::try_from(data.len())?);
+        header.set_mode(0o644);
+        header.set_cksum();
+        builder.append_data(&mut header, *name, *data)?;
+    }
     Ok(builder.into_inner()?)
 }
 
@@ -73,6 +89,42 @@ fn write_fixture(directory: &Path, name: &str, data: &[u8]) -> Result<PathBuf, B
     let path = directory.join(name);
     fs::write(&path, data)?;
     Ok(path)
+}
+
+struct NestedReferenceFixture {
+    _temp: TempDir,
+    source: PathBuf,
+    inner_ref: String,
+    payload_ref: String,
+}
+
+fn nested_reference_fixture() -> Result<NestedReferenceFixture, Box<dyn Error>> {
+    let temp = TempDir::new()?;
+    let inner = zip_bytes(&[("payload.txt", b"bounded reference payload")])?;
+    let outer = zip_bytes(&[("inner.zip", &inner)])?;
+    let source = write_fixture(temp.path(), "nested-budgets.zip", &outer)?;
+    let inspected = success_json(&[
+        "--format",
+        "json",
+        "inspect",
+        path_text(&source)?,
+        "--depth",
+        "2",
+    ])?;
+    let inner_ref = inspected["root"]["children"][0]["ref"]
+        .as_str()
+        .ok_or_else(|| io::Error::other("inner ref missing"))?
+        .to_owned();
+    let payload_ref = inspected["root"]["children"][0]["children"][0]["ref"]
+        .as_str()
+        .ok_or_else(|| io::Error::other("payload ref missing"))?
+        .to_owned();
+    Ok(NestedReferenceFixture {
+        _temp: temp,
+        source,
+        inner_ref,
+        payload_ref,
+    })
 }
 
 #[test]
@@ -274,12 +326,156 @@ fn nested_references_are_deterministic_readable_and_integrity_checked() -> TestR
     );
     assert_eq!(read["truncated"], false);
     assert!(read["content_sha256"].is_string());
+    assert_eq!(read["usage"]["entries_visited"], 2);
 
     fs::write(&source, b"changed after reference creation")?;
     let stale = invoke(&["--format", "json", "read", path_text(&source)?, &child_ref])?;
     assert_eq!(stale.status.code(), Some(5));
     let error: Value = serde_json::from_slice(&stale.stderr)?;
     assert_eq!(error["error"]["kind"], "integrity");
+    Ok(())
+}
+
+#[test]
+fn reference_resolution_enforces_depth_and_shared_entry_budgets() -> TestResult {
+    let fixture = nested_reference_fixture()?;
+
+    let direct_entry_limited = invoke(&[
+        "--format",
+        "json",
+        "read",
+        path_text(&fixture.source)?,
+        &fixture.inner_ref,
+        "--depth",
+        "1",
+        "--max-entries",
+        "0",
+    ])?;
+    assert_resource_error(&direct_entry_limited, "max_entries")?;
+
+    let depth_limited = invoke(&[
+        "--format",
+        "json",
+        "read",
+        path_text(&fixture.source)?,
+        &fixture.payload_ref,
+        "--depth",
+        "1",
+    ])?;
+    assert_resource_error(&depth_limited, "max_depth")?;
+
+    let entry_limited = invoke(&[
+        "--format",
+        "json",
+        "read",
+        path_text(&fixture.source)?,
+        &fixture.payload_ref,
+        "--depth",
+        "2",
+        "--max-entries",
+        "1",
+    ])?;
+    assert_resource_error(&entry_limited, "max_entries")?;
+
+    let read = success_json(&[
+        "--format",
+        "json",
+        "read",
+        path_text(&fixture.source)?,
+        &fixture.payload_ref,
+        "--depth",
+        "2",
+        "--max-entries",
+        "2",
+    ])?;
+    assert_eq!(read["usage"]["entries_visited"], 2);
+    assert_eq!(
+        BASE64.decode(read["data"].as_str().unwrap_or_default())?,
+        b"bounded reference payload"
+    );
+    Ok(())
+}
+
+#[test]
+fn list_reference_uses_depth_and_remaining_entry_budgets() -> TestResult {
+    let fixture = nested_reference_fixture()?;
+    let list_depth_limited = invoke(&[
+        "--format",
+        "json",
+        "list",
+        path_text(&fixture.source)?,
+        &fixture.inner_ref,
+        "--depth",
+        "0",
+    ])?;
+    assert_resource_error(&list_depth_limited, "max_depth")?;
+
+    let listed = success_json(&[
+        "--format",
+        "json",
+        "list",
+        path_text(&fixture.source)?,
+        &fixture.inner_ref,
+        "--depth",
+        "1",
+        "--max-entries",
+        "2",
+    ])?;
+    assert_eq!(listed["children"].as_array().map(Vec::len), Some(1));
+    assert_eq!(listed["usage"]["entries_visited"], 2);
+    Ok(())
+}
+
+#[test]
+fn tar_reference_resolution_counts_every_scanned_entry() -> TestResult {
+    let temp = TempDir::new()?;
+    let archive = tar_entries_bytes(&[
+        ("zero.txt", b"zero"),
+        ("one.txt", b"one"),
+        ("two.txt", b"two"),
+    ])?;
+    let source = write_fixture(temp.path(), "indexed.tar", &archive)?;
+    let inspected = success_json(&[
+        "--format",
+        "json",
+        "inspect",
+        path_text(&source)?,
+        "--depth",
+        "1",
+    ])?;
+    let third_ref = inspected["root"]["children"][2]["ref"]
+        .as_str()
+        .ok_or_else(|| io::Error::other("third TAR ref missing"))?;
+
+    let limited = invoke(&[
+        "--format",
+        "json",
+        "read",
+        path_text(&source)?,
+        third_ref,
+        "--depth",
+        "1",
+        "--max-entries",
+        "2",
+    ])?;
+    assert_resource_error(&limited, "max_entries")?;
+
+    let read = success_json(&[
+        "--format",
+        "json",
+        "read",
+        path_text(&source)?,
+        third_ref,
+        "--depth",
+        "1",
+        "--max-entries",
+        "3",
+    ])?;
+    assert_eq!(read["usage"]["entries_visited"], 3);
+    assert_eq!(
+        BASE64.decode(read["data"].as_str().unwrap_or_default())?,
+        b"two"
+    );
     Ok(())
 }
 

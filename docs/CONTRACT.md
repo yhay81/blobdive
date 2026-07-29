@@ -65,6 +65,11 @@ envelope cannot fit.
 Read data is base64. `returned_sha256` covers exactly the decoded `data`.
 `content_sha256` is present only if `truncated` is false. A root reference reads
 the root file; a child reference reads the fully resolved uncompressed entry.
+For `read` and `list`, `max_depth` bounds the number of adapter/index reference
+steps followed from the root, and each archive entry examined while following
+those steps counts toward the shared `max_entries` limit. Sequential TAR lookup
+counts entries before the selected index. Exceeding either limit is a hard
+resource error with exit code 3.
 
 ## Exit codes
 

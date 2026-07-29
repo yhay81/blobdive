@@ -126,7 +126,12 @@ blobdive --format json read release.zip "$child_ref" --max-bytes 65536
 returns exit code 5 if it no longer matches the reference. The CLI keeps no
 artifact cache or path registry. `read` returns base64 plus the digest of the
 returned bytes; `content_sha256` is present only when the complete referenced
-content was returned.
+content was returned. For these commands, `--depth` limits the number of
+adapter/index steps resolved from the root, and every archive entry examined
+during resolution consumes the same `--max-entries` budget used to list
+children. ZIP and GZIP resolution examine the selected entry; sequential TAR
+resolution also counts preceding entries. A root reference consumes no
+entry-resolution budget.
 
 ## Format support
 
