@@ -46,7 +46,12 @@ paths as identifiers. Raw names are retained as base64; display names are
 lossy UTF-8 and must never be interpreted as filesystem authority.
 
 `list` and `read` re-hash the supplied root. Resolution fails before child
-access if the digest differs.
+access if the digest differs. Before opening a referenced child, BlobDive
+rejects a reference with more adapter/index steps than `max_depth`. Each
+archive entry examined during resolution consumes the invocation-wide
+`max_entries` budget; sequential TAR lookup therefore counts entries preceding
+the selected index. `list` then uses the remaining entries for the target's
+direct children.
 
 ## Failure containment
 

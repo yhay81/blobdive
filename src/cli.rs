@@ -90,9 +90,17 @@ enum Command {
 
 #[derive(Debug, Clone, Args)]
 struct BudgetArgs {
-    #[arg(long, default_value_t = 2)]
+    #[arg(
+        long,
+        default_value_t = 2,
+        help = "Maximum traversal depth or reference steps from the root"
+    )]
     depth: u8,
-    #[arg(long, default_value_t = 200)]
+    #[arg(
+        long,
+        default_value_t = 200,
+        help = "Maximum archive entries examined, including reference resolution"
+    )]
     max_entries: u64,
     #[arg(long, default_value_t = 67_108_864)]
     max_source_bytes: u64,
@@ -187,9 +195,9 @@ fn execute(cli: Cli) -> Result<(), (BlobError, OutputFormat)> {
             reference,
             budgets,
         } => {
-            let mut limits = budgets.limits();
-            limits.max_depth = 1;
-            let options = InspectOptions { limits };
+            let options = InspectOptions {
+                limits: budgets.limits(),
+            };
             list_reference(&source, &reference, &options).and_then(|result| {
                 let human = render_list_human(&result);
                 emit(&result, format, &human)

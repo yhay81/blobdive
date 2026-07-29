@@ -18,6 +18,9 @@ for CLI and machine-contract compatibility.
 
 - Rejected performance evidence with a non-canonical commit identity,
   incomplete runner metadata, a non-raw sample marker, or reused sample paths.
+- Enforced depth and shared entry budgets while resolving `list` and `read`
+  references, including sequential entries scanned during TAR lookup, before
+  opening an over-budget child.
 
 ## [0.3.0] - 2026-07-29
 
