@@ -1,0 +1,64 @@
+{
+  "by_category": {
+    "decompressed_bytes": {
+      "cases": 10,
+      "detected_cases": 10,
+      "detection_rate": 1.0,
+      "materialized_paths": 0
+    },
+    "encryption": {
+      "cases": 10,
+      "detected_cases": 10,
+      "detection_rate": 1.0,
+      "materialized_paths": 0
+    },
+    "entry_count": {
+      "cases": 10,
+      "detected_cases": 10,
+      "detection_rate": 1.0,
+      "materialized_paths": 0
+    },
+    "excessive_depth": {
+      "cases": 10,
+      "detected_cases": 10,
+      "detection_rate": 1.0,
+      "materialized_paths": 0
+    },
+    "expansion_ratio": {
+      "cases": 10,
+      "detected_cases": 10,
+      "detection_rate": 1.0,
+      "materialized_paths": 0
+    },
+    "tampered_reference": {
+      "cases": 10,
+      "detected_cases": 10,
+      "detection_rate": 1.0,
+      "materialized_paths": 0
+    },
+    "traversal_path": {
+      "cases": 10,
+      "detected_cases": 10,
+      "detection_rate": 1.0,
+      "materialized_paths": 0
+    },
+    "truncated_structure": {
+      "cases": 10,
+      "detected_cases": 10,
+      "detection_rate": 1.0,
+      "materialized_paths": 0
+    },
+    "unsafe_link": {
+      "cases": 10,
+      "detected_cases": 10,
+      "detection_rate": 1.0,
+      "materialized_paths": 0
+    }
+  },
+  "corpus_sha256": "8e4c5c35423377e5fa98ef35e8b839013d4d6cb315cdc4627042b71a1426c9f2",
+  "detected_cases": 90,
+  "detection_rate": 1.0,
+  "materialized_paths": 0,
+  "schema_version": "blobdive.adversarial-metrics.v1",
+  "total_cases": 90
+}

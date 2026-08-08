@@ -1,0 +1,907 @@
+{
+  "cases": [
+    {
+      "category": "traversal_path",
+      "expected": {
+        "code": "unsafe_archive_path",
+        "materialized_paths": 0
+      },
+      "id": "traversal_path-01",
+      "operation": "inspect",
+      "variant": 0
+    },
+    {
+      "category": "traversal_path",
+      "expected": {
+        "code": "unsafe_archive_path",
+        "materialized_paths": 0
+      },
+      "id": "traversal_path-02",
+      "operation": "inspect",
+      "variant": 1
+    },
+    {
+      "category": "traversal_path",
+      "expected": {
+        "code": "unsafe_archive_path",
+        "materialized_paths": 0
+      },
+      "id": "traversal_path-03",
+      "operation": "inspect",
+      "variant": 2
+    },
+    {
+      "category": "traversal_path",
+      "expected": {
+        "code": "unsafe_archive_path",
+        "materialized_paths": 0
+      },
+      "id": "traversal_path-04",
+      "operation": "inspect",
+      "variant": 3
+    },
+    {
+      "category": "traversal_path",
+      "expected": {
+        "code": "unsafe_archive_path",
+        "materialized_paths": 0
+      },
+      "id": "traversal_path-05",
+      "operation": "inspect",
+      "variant": 4
+    },
+    {
+      "category": "traversal_path",
+      "expected": {
+        "code": "unsafe_archive_path",
+        "materialized_paths": 0
+      },
+      "id": "traversal_path-06",
+      "operation": "inspect",
+      "variant": 5
+    },
+    {
+      "category": "traversal_path",
+      "expected": {
+        "code": "unsafe_archive_path",
+        "materialized_paths": 0
+      },
+      "id": "traversal_path-07",
+      "operation": "inspect",
+      "variant": 6
+    },
+    {
+      "category": "traversal_path",
+      "expected": {
+        "code": "unsafe_archive_path",
+        "materialized_paths": 0
+      },
+      "id": "traversal_path-08",
+      "operation": "inspect",
+      "variant": 7
+    },
+    {
+      "category": "traversal_path",
+      "expected": {
+        "code": "unsafe_archive_path",
+        "materialized_paths": 0
+      },
+      "id": "traversal_path-09",
+      "operation": "inspect",
+      "variant": 8
+    },
+    {
+      "category": "traversal_path",
+      "expected": {
+        "code": "unsafe_archive_path",
+        "materialized_paths": 0
+      },
+      "id": "traversal_path-10",
+      "operation": "inspect",
+      "variant": 9
+    },
+    {
+      "category": "unsafe_link",
+      "expected": {
+        "code": "link_metadata_only",
+        "materialized_paths": 0
+      },
+      "id": "unsafe_link-01",
+      "operation": "inspect",
+      "variant": 0
+    },
+    {
+      "category": "unsafe_link",
+      "expected": {
+        "code": "link_metadata_only",
+        "materialized_paths": 0
+      },
+      "id": "unsafe_link-02",
+      "operation": "inspect",
+      "variant": 1
+    },
+    {
+      "category": "unsafe_link",
+      "expected": {
+        "code": "link_metadata_only",
+        "materialized_paths": 0
+      },
+      "id": "unsafe_link-03",
+      "operation": "inspect",
+      "variant": 2
+    },
+    {
+      "category": "unsafe_link",
+      "expected": {
+        "code": "link_metadata_only",
+        "materialized_paths": 0
+      },
+      "id": "unsafe_link-04",
+      "operation": "inspect",
+      "variant": 3
+    },
+    {
+      "category": "unsafe_link",
+      "expected": {
+        "code": "link_metadata_only",
+        "materialized_paths": 0
+      },
+      "id": "unsafe_link-05",
+      "operation": "inspect",
+      "variant": 4
+    },
+    {
+      "category": "unsafe_link",
+      "expected": {
+        "code": "link_metadata_only",
+        "materialized_paths": 0
+      },
+      "id": "unsafe_link-06",
+      "operation": "inspect",
+      "variant": 5
+    },
+    {
+      "category": "unsafe_link",
+      "expected": {
+        "code": "link_metadata_only",
+        "materialized_paths": 0
+      },
+      "id": "unsafe_link-07",
+      "operation": "inspect",
+      "variant": 6
+    },
+    {
+      "category": "unsafe_link",
+      "expected": {
+        "code": "link_metadata_only",
+        "materialized_paths": 0
+      },
+      "id": "unsafe_link-08",
+      "operation": "inspect",
+      "variant": 7
+    },
+    {
+      "category": "unsafe_link",
+      "expected": {
+        "code": "link_metadata_only",
+        "materialized_paths": 0
+      },
+      "id": "unsafe_link-09",
+      "operation": "inspect",
+      "variant": 8
+    },
+    {
+      "category": "unsafe_link",
+      "expected": {
+        "code": "link_metadata_only",
+        "materialized_paths": 0
+      },
+      "id": "unsafe_link-10",
+      "operation": "inspect",
+      "variant": 9
+    },
+    {
+      "category": "encryption",
+      "expected": {
+        "code": "encrypted_entry",
+        "materialized_paths": 0
+      },
+      "id": "encryption-01",
+      "operation": "inspect",
+      "variant": 0
+    },
+    {
+      "category": "encryption",
+      "expected": {
+        "code": "encrypted_entry",
+        "materialized_paths": 0
+      },
+      "id": "encryption-02",
+      "operation": "inspect",
+      "variant": 1
+    },
+    {
+      "category": "encryption",
+      "expected": {
+        "code": "encrypted_entry",
+        "materialized_paths": 0
+      },
+      "id": "encryption-03",
+      "operation": "inspect",
+      "variant": 2
+    },
+    {
+      "category": "encryption",
+      "expected": {
+        "code": "encrypted_entry",
+        "materialized_paths": 0
+      },
+      "id": "encryption-04",
+      "operation": "inspect",
+      "variant": 3
+    },
+    {
+      "category": "encryption",
+      "expected": {
+        "code": "encrypted_entry",
+        "materialized_paths": 0
+      },
+      "id": "encryption-05",
+      "operation": "inspect",
+      "variant": 4
+    },
+    {
+      "category": "encryption",
+      "expected": {
+        "code": "encrypted_entry",
+        "materialized_paths": 0
+      },
+      "id": "encryption-06",
+      "operation": "inspect",
+      "variant": 5
+    },
+    {
+      "category": "encryption",
+      "expected": {
+        "code": "encrypted_entry",
+        "materialized_paths": 0
+      },
+      "id": "encryption-07",
+      "operation": "inspect",
+      "variant": 6
+    },
+    {
+      "category": "encryption",
+      "expected": {
+        "code": "encrypted_entry",
+        "materialized_paths": 0
+      },
+      "id": "encryption-08",
+      "operation": "inspect",
+      "variant": 7
+    },
+    {
+      "category": "encryption",
+      "expected": {
+        "code": "encrypted_entry",
+        "materialized_paths": 0
+      },
+      "id": "encryption-09",
+      "operation": "inspect",
+      "variant": 8
+    },
+    {
+      "category": "encryption",
+      "expected": {
+        "code": "encrypted_entry",
+        "materialized_paths": 0
+      },
+      "id": "encryption-10",
+      "operation": "inspect",
+      "variant": 9
+    },
+    {
+      "category": "truncated_structure",
+      "expected": {
+        "code": "adapter_failure",
+        "materialized_paths": 0
+      },
+      "id": "truncated_structure-01",
+      "operation": "inspect",
+      "variant": 0
+    },
+    {
+      "category": "truncated_structure",
+      "expected": {
+        "code": "adapter_failure",
+        "materialized_paths": 0
+      },
+      "id": "truncated_structure-02",
+      "operation": "inspect",
+      "variant": 1
+    },
+    {
+      "category": "truncated_structure",
+      "expected": {
+        "code": "adapter_failure",
+        "materialized_paths": 0
+      },
+      "id": "truncated_structure-03",
+      "operation": "inspect",
+      "variant": 2
+    },
+    {
+      "category": "truncated_structure",
+      "expected": {
+        "code": "adapter_failure",
+        "materialized_paths": 0
+      },
+      "id": "truncated_structure-04",
+      "operation": "inspect",
+      "variant": 3
+    },
+    {
+      "category": "truncated_structure",
+      "expected": {
+        "code": "adapter_failure",
+        "materialized_paths": 0
+      },
+      "id": "truncated_structure-05",
+      "operation": "inspect",
+      "variant": 4
+    },
+    {
+      "category": "truncated_structure",
+      "expected": {
+        "code": "adapter_failure",
+        "materialized_paths": 0
+      },
+      "id": "truncated_structure-06",
+      "operation": "inspect",
+      "variant": 5
+    },
+    {
+      "category": "truncated_structure",
+      "expected": {
+        "code": "adapter_failure",
+        "materialized_paths": 0
+      },
+      "id": "truncated_structure-07",
+      "operation": "inspect",
+      "variant": 6
+    },
+    {
+      "category": "truncated_structure",
+      "expected": {
+        "code": "adapter_failure",
+        "materialized_paths": 0
+      },
+      "id": "truncated_structure-08",
+      "operation": "inspect",
+      "variant": 7
+    },
+    {
+      "category": "truncated_structure",
+      "expected": {
+        "code": "adapter_failure",
+        "materialized_paths": 0
+      },
+      "id": "truncated_structure-09",
+      "operation": "inspect",
+      "variant": 8
+    },
+    {
+      "category": "truncated_structure",
+      "expected": {
+        "code": "adapter_failure",
+        "materialized_paths": 0
+      },
+      "id": "truncated_structure-10",
+      "operation": "inspect",
+      "variant": 9
+    },
+    {
+      "category": "tampered_reference",
+      "expected": {
+        "code": "integrity",
+        "materialized_paths": 0
+      },
+      "id": "tampered_reference-01",
+      "operation": "read",
+      "variant": 0
+    },
+    {
+      "category": "tampered_reference",
+      "expected": {
+        "code": "integrity",
+        "materialized_paths": 0
+      },
+      "id": "tampered_reference-02",
+      "operation": "read",
+      "variant": 1
+    },
+    {
+      "category": "tampered_reference",
+      "expected": {
+        "code": "integrity",
+        "materialized_paths": 0
+      },
+      "id": "tampered_reference-03",
+      "operation": "read",
+      "variant": 2
+    },
+    {
+      "category": "tampered_reference",
+      "expected": {
+        "code": "integrity",
+        "materialized_paths": 0
+      },
+      "id": "tampered_reference-04",
+      "operation": "read",
+      "variant": 3
+    },
+    {
+      "category": "tampered_reference",
+      "expected": {
+        "code": "integrity",
+        "materialized_paths": 0
+      },
+      "id": "tampered_reference-05",
+      "operation": "read",
+      "variant": 4
+    },
+    {
+      "category": "tampered_reference",
+      "expected": {
+        "code": "integrity",
+        "materialized_paths": 0
+      },
+      "id": "tampered_reference-06",
+      "operation": "read",
+      "variant": 5
+    },
+    {
+      "category": "tampered_reference",
+      "expected": {
+        "code": "integrity",
+        "materialized_paths": 0
+      },
+      "id": "tampered_reference-07",
+      "operation": "read",
+      "variant": 6
+    },
+    {
+      "category": "tampered_reference",
+      "expected": {
+        "code": "integrity",
+        "materialized_paths": 0
+      },
+      "id": "tampered_reference-08",
+      "operation": "read",
+      "variant": 7
+    },
+    {
+      "category": "tampered_reference",
+      "expected": {
+        "code": "integrity",
+        "materialized_paths": 0
+      },
+      "id": "tampered_reference-09",
+      "operation": "read",
+      "variant": 8
+    },
+    {
+      "category": "tampered_reference",
+      "expected": {
+        "code": "integrity",
+        "materialized_paths": 0
+      },
+      "id": "tampered_reference-10",
+      "operation": "read",
+      "variant": 9
+    },
+    {
+      "category": "excessive_depth",
+      "expected": {
+        "code": "max_depth",
+        "materialized_paths": 0
+      },
+      "id": "excessive_depth-01",
+      "operation": "inspect",
+      "variant": 0
+    },
+    {
+      "category": "excessive_depth",
+      "expected": {
+        "code": "max_depth",
+        "materialized_paths": 0
+      },
+      "id": "excessive_depth-02",
+      "operation": "inspect",
+      "variant": 1
+    },
+    {
+      "category": "excessive_depth",
+      "expected": {
+        "code": "max_depth",
+        "materialized_paths": 0
+      },
+      "id": "excessive_depth-03",
+      "operation": "inspect",
+      "variant": 2
+    },
+    {
+      "category": "excessive_depth",
+      "expected": {
+        "code": "max_depth",
+        "materialized_paths": 0
+      },
+      "id": "excessive_depth-04",
+      "operation": "inspect",
+      "variant": 3
+    },
+    {
+      "category": "excessive_depth",
+      "expected": {
+        "code": "max_depth",
+        "materialized_paths": 0
+      },
+      "id": "excessive_depth-05",
+      "operation": "inspect",
+      "variant": 4
+    },
+    {
+      "category": "excessive_depth",
+      "expected": {
+        "code": "max_depth",
+        "materialized_paths": 0
+      },
+      "id": "excessive_depth-06",
+      "operation": "inspect",
+      "variant": 5
+    },
+    {
+      "category": "excessive_depth",
+      "expected": {
+        "code": "max_depth",
+        "materialized_paths": 0
+      },
+      "id": "excessive_depth-07",
+      "operation": "inspect",
+      "variant": 6
+    },
+    {
+      "category": "excessive_depth",
+      "expected": {
+        "code": "max_depth",
+        "materialized_paths": 0
+      },
+      "id": "excessive_depth-08",
+      "operation": "inspect",
+      "variant": 7
+    },
+    {
+      "category": "excessive_depth",
+      "expected": {
+        "code": "max_depth",
+        "materialized_paths": 0
+      },
+      "id": "excessive_depth-09",
+      "operation": "inspect",
+      "variant": 8
+    },
+    {
+      "category": "excessive_depth",
+      "expected": {
+        "code": "max_depth",
+        "materialized_paths": 0
+      },
+      "id": "excessive_depth-10",
+      "operation": "inspect",
+      "variant": 9
+    },
+    {
+      "category": "entry_count",
+      "expected": {
+        "code": "max_entries",
+        "materialized_paths": 0
+      },
+      "id": "entry_count-01",
+      "operation": "inspect",
+      "variant": 0
+    },
+    {
+      "category": "entry_count",
+      "expected": {
+        "code": "max_entries",
+        "materialized_paths": 0
+      },
+      "id": "entry_count-02",
+      "operation": "inspect",
+      "variant": 1
+    },
+    {
+      "category": "entry_count",
+      "expected": {
+        "code": "max_entries",
+        "materialized_paths": 0
+      },
+      "id": "entry_count-03",
+      "operation": "inspect",
+      "variant": 2
+    },
+    {
+      "category": "entry_count",
+      "expected": {
+        "code": "max_entries",
+        "materialized_paths": 0
+      },
+      "id": "entry_count-04",
+      "operation": "inspect",
+      "variant": 3
+    },
+    {
+      "category": "entry_count",
+      "expected": {
+        "code": "max_entries",
+        "materialized_paths": 0
+      },
+      "id": "entry_count-05",
+      "operation": "inspect",
+      "variant": 4
+    },
+    {
+      "category": "entry_count",
+      "expected": {
+        "code": "max_entries",
+        "materialized_paths": 0
+      },
+      "id": "entry_count-06",
+      "operation": "inspect",
+      "variant": 5
+    },
+    {
+      "category": "entry_count",
+      "expected": {
+        "code": "max_entries",
+        "materialized_paths": 0
+      },
+      "id": "entry_count-07",
+      "operation": "inspect",
+      "variant": 6
+    },
+    {
+      "category": "entry_count",
+      "expected": {
+        "code": "max_entries",
+        "materialized_paths": 0
+      },
+      "id": "entry_count-08",
+      "operation": "inspect",
+      "variant": 7
+    },
+    {
+      "category": "entry_count",
+      "expected": {
+        "code": "max_entries",
+        "materialized_paths": 0
+      },
+      "id": "entry_count-09",
+      "operation": "inspect",
+      "variant": 8
+    },
+    {
+      "category": "entry_count",
+      "expected": {
+        "code": "max_entries",
+        "materialized_paths": 0
+      },
+      "id": "entry_count-10",
+      "operation": "inspect",
+      "variant": 9
+    },
+    {
+      "category": "expansion_ratio",
+      "expected": {
+        "code": "max_compression_ratio",
+        "materialized_paths": 0
+      },
+      "id": "expansion_ratio-01",
+      "operation": "inspect",
+      "variant": 0
+    },
+    {
+      "category": "expansion_ratio",
+      "expected": {
+        "code": "max_compression_ratio",
+        "materialized_paths": 0
+      },
+      "id": "expansion_ratio-02",
+      "operation": "inspect",
+      "variant": 1
+    },
+    {
+      "category": "expansion_ratio",
+      "expected": {
+        "code": "max_compression_ratio",
+        "materialized_paths": 0
+      },
+      "id": "expansion_ratio-03",
+      "operation": "inspect",
+      "variant": 2
+    },
+    {
+      "category": "expansion_ratio",
+      "expected": {
+        "code": "max_compression_ratio",
+        "materialized_paths": 0
+      },
+      "id": "expansion_ratio-04",
+      "operation": "inspect",
+      "variant": 3
+    },
+    {
+      "category": "expansion_ratio",
+      "expected": {
+        "code": "max_compression_ratio",
+        "materialized_paths": 0
+      },
+      "id": "expansion_ratio-05",
+      "operation": "inspect",
+      "variant": 4
+    },
+    {
+      "category": "expansion_ratio",
+      "expected": {
+        "code": "max_compression_ratio",
+        "materialized_paths": 0
+      },
+      "id": "expansion_ratio-06",
+      "operation": "inspect",
+      "variant": 5
+    },
+    {
+      "category": "expansion_ratio",
+      "expected": {
+        "code": "max_compression_ratio",
+        "materialized_paths": 0
+      },
+      "id": "expansion_ratio-07",
+      "operation": "inspect",
+      "variant": 6
+    },
+    {
+      "category": "expansion_ratio",
+      "expected": {
+        "code": "max_compression_ratio",
+        "materialized_paths": 0
+      },
+      "id": "expansion_ratio-08",
+      "operation": "inspect",
+      "variant": 7
+    },
+    {
+      "category": "expansion_ratio",
+      "expected": {
+        "code": "max_compression_ratio",
+        "materialized_paths": 0
+      },
+      "id": "expansion_ratio-09",
+      "operation": "inspect",
+      "variant": 8
+    },
+    {
+      "category": "expansion_ratio",
+      "expected": {
+        "code": "max_compression_ratio",
+        "materialized_paths": 0
+      },
+      "id": "expansion_ratio-10",
+      "operation": "inspect",
+      "variant": 9
+    },
+    {
+      "category": "decompressed_bytes",
+      "expected": {
+        "code": "max_decompressed_bytes",
+        "materialized_paths": 0
+      },
+      "id": "decompressed_bytes-01",
+      "operation": "inspect",
+      "variant": 0
+    },
+    {
+      "category": "decompressed_bytes",
+      "expected": {
+        "code": "max_decompressed_bytes",
+        "materialized_paths": 0
+      },
+      "id": "decompressed_bytes-02",
+      "operation": "inspect",
+      "variant": 1
+    },
+    {
+      "category": "decompressed_bytes",
+      "expected": {
+        "code": "max_decompressed_bytes",
+        "materialized_paths": 0
+      },
+      "id": "decompressed_bytes-03",
+      "operation": "inspect",
+      "variant": 2
+    },
+    {
+      "category": "decompressed_bytes",
+      "expected": {
+        "code": "max_decompressed_bytes",
+        "materialized_paths": 0
+      },
+      "id": "decompressed_bytes-04",
+      "operation": "inspect",
+      "variant": 3
+    },
+    {
+      "category": "decompressed_bytes",
+      "expected": {
+        "code": "max_decompressed_bytes",
+        "materialized_paths": 0
+      },
+      "id": "decompressed_bytes-05",
+      "operation": "inspect",
+      "variant": 4
+    },
+    {
+      "category": "decompressed_bytes",
+      "expected": {
+        "code": "max_decompressed_bytes",
+        "materialized_paths": 0
+      },
+      "id": "decompressed_bytes-06",
+      "operation": "inspect",
+      "variant": 5
+    },
+    {
+      "category": "decompressed_bytes",
+      "expected": {
+        "code": "max_decompressed_bytes",
+        "materialized_paths": 0
+      },
+      "id": "decompressed_bytes-07",
+      "operation": "inspect",
+      "variant": 6
+    },
+    {
+      "category": "decompressed_bytes",
+      "expected": {
+        "code": "max_decompressed_bytes",
+        "materialized_paths": 0
+      },
+      "id": "decompressed_bytes-08",
+      "operation": "inspect",
+      "variant": 7
+    },
+    {
+      "category": "decompressed_bytes",
+      "expected": {
+        "code": "max_decompressed_bytes",
+        "materialized_paths": 0
+      },
+      "id": "decompressed_bytes-09",
+      "operation": "inspect",
+      "variant": 8
+    },
+    {
+      "category": "decompressed_bytes",
+      "expected": {
+        "code": "max_decompressed_bytes",
+        "materialized_paths": 0
+      },
+      "id": "decompressed_bytes-10",
+      "operation": "inspect",
+      "variant": 9
+    }
+  ],
+  "generator": "generate_corpus.py",
+  "license": "MIT",
+  "schema_version": "blobdive.adversarial-corpus.v1"
+}

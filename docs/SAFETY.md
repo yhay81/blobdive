@@ -16,9 +16,13 @@
 - References fail closed after root-byte changes.
 
 Tests exercise parent traversal names, compressed expansion, malformed ZIP,
-ZIP payload checksums and declared sizes, exact decompression boundaries,
-concatenated GZIP members and their checksums, nested references, stale
-references, entry/output/time limits, and no materialization.
+ ZIP payload checksums and declared sizes, exact decompression boundaries,
+ concatenated GZIP members and their checksums, nested references, stale
+ references, entry/output/time limits, and no materialization.
+The versioned [adversarial archive
+corpus](../tests/fixtures/adversarial/README.md) aggregates 90 labeled cases
+across all nine v1 hostile-input classes and publishes reproducible per-class
+detection and sandbox-write metrics.
 
 ## Non-guarantees
 
