@@ -46,6 +46,36 @@ fn assert_resource_error(output: &Output, reason: &str) -> TestResult {
     Ok(())
 }
 
+fn assert_zip_payload_rejected(source: &Path, expected_message: &str) -> TestResult {
+    let result = success_json(&[
+        "--format",
+        "json",
+        "inspect",
+        path_text(source)?,
+        "--depth",
+        "1",
+    ])?;
+    let child = &result["root"]["children"][0];
+    assert!(child["digest"].is_null());
+    assert_eq!(child["truncation"]["reasons"][0], "adapter_failure");
+    assert_eq!(child["findings"][0]["code"], "entry_read_failed");
+    assert!(child["findings"][0]["message"]
+        .as_str()
+        .is_some_and(|message| message.contains(expected_message)));
+
+    let child_ref = child["ref"]
+        .as_str()
+        .ok_or_else(|| io::Error::other("rejected ZIP child ref missing"))?;
+    let read = invoke(&["--format", "json", "read", path_text(source)?, child_ref])?;
+    assert_eq!(read.status.code(), Some(1));
+    let error: Value = serde_json::from_slice(&read.stderr)?;
+    assert_eq!(error["error"]["kind"], "archive");
+    assert!(error["error"]["message"]
+        .as_str()
+        .is_some_and(|message| message.contains(expected_message)));
+    Ok(())
+}
+
 fn zip_bytes(entries: &[(&str, &[u8])]) -> Result<Vec<u8>, Box<dyn Error>> {
     let cursor = Cursor::new(Vec::new());
     let mut writer = ZipWriter::new(cursor);
@@ -55,6 +85,24 @@ fn zip_bytes(entries: &[(&str, &[u8])]) -> Result<Vec<u8>, Box<dyn Error>> {
         writer.write_all(data)?;
     }
     Ok(writer.finish()?.into_inner())
+}
+
+fn patch_zip_u32(
+    bytes: &mut [u8],
+    signature: [u8; 4],
+    field_offset: usize,
+    value: u32,
+) -> TestResult {
+    let header_offset = bytes
+        .windows(signature.len())
+        .position(|candidate| candidate == signature)
+        .ok_or_else(|| io::Error::other("ZIP header signature missing"))?;
+    let field_start = header_offset.saturating_add(field_offset);
+    let field = bytes
+        .get_mut(field_start..field_start.saturating_add(4))
+        .ok_or_else(|| io::Error::other("ZIP header field missing"))?;
+    field.copy_from_slice(&value.to_le_bytes());
+    Ok(())
 }
 
 fn tar_bytes(name: &str, data: &[u8]) -> Result<Vec<u8>, Box<dyn Error>> {
@@ -296,6 +344,178 @@ fn compression_ratio_preflight_blocks_zip_bombs() -> TestResult {
         result["root"]["children"][0]["findings"][0]["code"],
         "compression_ratio_exceeded"
     );
+    Ok(())
+}
+
+#[test]
+fn zip_payload_integrity_is_verified_before_digest_or_read() -> TestResult {
+    let temp = TempDir::new()?;
+    let payload = b"integrity payload".repeat(64);
+
+    let mut bad_crc = zip_bytes(&[("payload.txt", &payload)])?;
+    // Local-file and central-directory CRC-32 fields.
+    patch_zip_u32(&mut bad_crc, *b"PK\x03\x04", 14, 0)?;
+    patch_zip_u32(&mut bad_crc, *b"PK\x01\x02", 16, 0)?;
+    let bad_crc_source = write_fixture(temp.path(), "bad-crc.zip", &bad_crc)?;
+    assert_zip_payload_rejected(&bad_crc_source, "Invalid checksum")?;
+
+    let mut underdeclared = zip_bytes(&[("payload.txt", &payload)])?;
+    // Local-file and central-directory uncompressed-size fields.
+    patch_zip_u32(&mut underdeclared, *b"PK\x03\x04", 22, 1)?;
+    patch_zip_u32(&mut underdeclared, *b"PK\x01\x02", 24, 1)?;
+    let underdeclared_source = write_fixture(temp.path(), "underdeclared.zip", &underdeclared)?;
+    assert_zip_payload_rejected(&underdeclared_source, "declared uncompressed size")?;
+    Ok(())
+}
+
+#[test]
+fn gzip_payload_at_the_exact_decompression_limit_is_complete() -> TestResult {
+    let temp = TempDir::new()?;
+    let payload = vec![b'B'; 1024];
+    let gzip = gzip_bytes("exact.txt", &payload)?;
+    let source = write_fixture(temp.path(), "exact.gz", &gzip)?;
+    let result = success_json(&[
+        "--format",
+        "json",
+        "inspect",
+        path_text(&source)?,
+        "--depth",
+        "1",
+        "--max-decompressed-bytes",
+        "1024",
+        "--max-compression-ratio",
+        "1000",
+    ])?;
+    let child = &result["root"]["children"][0];
+    assert_eq!(child["size"], 1024);
+    assert!(child["digest"].is_string());
+    assert_eq!(child["format"], "text");
+    assert_eq!(child["truncation"]["truncated"], false);
+    assert_eq!(result["usage"]["decompressed_bytes"], 1024);
+
+    let child_ref = child["ref"]
+        .as_str()
+        .ok_or_else(|| io::Error::other("exact-limit GZIP child ref missing"))?;
+    let read = success_json(&[
+        "--format",
+        "json",
+        "read",
+        path_text(&source)?,
+        child_ref,
+        "--max-decompressed-bytes",
+        "1024",
+        "--max-compression-ratio",
+        "1000",
+    ])?;
+    assert_eq!(read["returned_bytes"], 1024);
+    assert_eq!(read["total_bytes"], 1024);
+    assert_eq!(read["truncated"], false);
+    assert!(read["content_sha256"].is_string());
+    assert_eq!(
+        BASE64.decode(read["data"].as_str().unwrap_or_default())?,
+        payload
+    );
+    Ok(())
+}
+
+#[test]
+fn concatenated_gzip_members_are_fully_read_and_verified() -> TestResult {
+    let temp = TempDir::new()?;
+    let first_payload = b"benign first member\n";
+    let second_payload = b"previously hidden second member\n";
+    let first = gzip_bytes("first.txt", first_payload)?;
+    let second = gzip_bytes("second.txt", second_payload)?;
+    let mut concatenated = first;
+    concatenated.extend_from_slice(&second);
+    let source = write_fixture(temp.path(), "concatenated.gz", &concatenated)?;
+
+    let result = success_json(&[
+        "--format",
+        "json",
+        "inspect",
+        path_text(&source)?,
+        "--depth",
+        "1",
+    ])?;
+    let child = &result["root"]["children"][0];
+    let expected_payload = [first_payload.as_slice(), second_payload.as_slice()].concat();
+    assert_eq!(child["display_name"], "first.txt");
+    assert_eq!(child["size"], expected_payload.len());
+    assert!(child["digest"].is_string());
+    assert_eq!(child["truncation"]["truncated"], false);
+    assert_eq!(
+        child["attributes"]["gzip"]["compressed_size"],
+        concatenated.len()
+    );
+
+    let child_ref = child["ref"]
+        .as_str()
+        .ok_or_else(|| io::Error::other("concatenated GZIP child ref missing"))?;
+    let read = success_json(&["--format", "json", "read", path_text(&source)?, child_ref])?;
+    assert_eq!(read["total_bytes"], expected_payload.len());
+    assert_eq!(read["truncated"], false);
+    assert_eq!(
+        BASE64.decode(read["data"].as_str().unwrap_or_default())?,
+        expected_payload
+    );
+
+    let bounded = success_json(&[
+        "--format",
+        "json",
+        "inspect",
+        path_text(&source)?,
+        "--depth",
+        "1",
+        "--max-decompressed-bytes",
+        &first_payload.len().to_string(),
+        "--max-compression-ratio",
+        "1000",
+    ])?;
+    let bounded_child = &bounded["root"]["children"][0];
+    assert!(bounded_child["digest"].is_null());
+    assert_eq!(
+        bounded_child["truncation"]["reasons"][0],
+        "max_decompressed_bytes"
+    );
+    assert_eq!(bounded["usage"]["decompressed_bytes"], first_payload.len());
+
+    let mut corrupt_second_member = concatenated;
+    let second_crc = corrupt_second_member
+        .len()
+        .checked_sub(8)
+        .ok_or_else(|| io::Error::other("GZIP trailer missing"))?;
+    corrupt_second_member[second_crc] ^= 0xff;
+    let corrupt_source = write_fixture(
+        temp.path(),
+        "corrupt-second-member.gz",
+        &corrupt_second_member,
+    )?;
+    let corrupt_result = success_json(&[
+        "--format",
+        "json",
+        "inspect",
+        path_text(&corrupt_source)?,
+        "--depth",
+        "1",
+    ])?;
+    let corrupt_child = &corrupt_result["root"]["children"][0];
+    assert!(corrupt_child["digest"].is_null());
+    assert_eq!(corrupt_child["truncation"]["reasons"][0], "adapter_failure");
+    assert_eq!(corrupt_child["findings"][0]["code"], "entry_read_failed");
+
+    let corrupt_ref = corrupt_child["ref"]
+        .as_str()
+        .ok_or_else(|| io::Error::other("corrupt GZIP child ref missing"))?;
+    let corrupt_read = invoke(&[
+        "--format",
+        "json",
+        "read",
+        path_text(&corrupt_source)?,
+        corrupt_ref,
+    ])?;
+    assert_eq!(corrupt_read.status.code(), Some(1));
+    let error: Value = serde_json::from_slice(&corrupt_read.stderr)?;
+    assert_eq!(error["error"]["kind"], "archive");
     Ok(())
 }
 
