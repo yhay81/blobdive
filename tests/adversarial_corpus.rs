@@ -304,8 +304,10 @@ fn raw_tar_entry(
     Ok(archive)
 }
 
-fn write_source(workspace: &Path, case: &Case, bytes: &[u8]) -> TestResult<PathBuf> {
-    let path = workspace.join(format!("{}.bin", case.id));
+fn write_source(workspace: &Path, _case: &Case, bytes: &[u8]) -> TestResult<PathBuf> {
+    // Each corpus case receives its own temporary workspace, so a fixed filename
+    // avoids treating corpus metadata as a filesystem path component.
+    let path = workspace.join("source.bin");
     fs::write(&path, bytes)?;
     Ok(path)
 }
