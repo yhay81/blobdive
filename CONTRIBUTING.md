@@ -23,7 +23,7 @@ cd blobdive
 cargo test --all-targets --locked
 ```
 
-Artifact detection and nested-reference parsing are continuously fuzzed. See
+A fuzz target covers artifact detection and nested-reference parsing. See
 [FUZZING.md](FUZZING.md) for the reproducible local command and crash-handling
 rules.
 
