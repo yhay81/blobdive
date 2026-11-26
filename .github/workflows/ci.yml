@@ -1,9 +1,6 @@
 name: CI
 
 on:
-  pull_request:
-  schedule:
-    - cron: "24 3 * * 4"
   workflow_dispatch:
 
 permissions:

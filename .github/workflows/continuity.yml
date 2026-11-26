@@ -1,8 +1,6 @@
 name: Maintainer continuity drill
 
 on:
-  schedule:
-    - cron: "20 2 * * 5"
   workflow_dispatch:
 
 permissions:

@@ -1,7 +1,7 @@
 # BlobDive performance baseline
 
-This directory defines and enforces BlobDive's reproducible v1.0 performance
-thresholds on pull requests and in the weekly scheduled benchmark.
+This directory defines BlobDive's reproducible v1.0 performance thresholds.
+The hosted benchmark is manually triggered during maintenance.
 
 ## Workloads
 
