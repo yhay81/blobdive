@@ -191,7 +191,7 @@ fn schemas_completions_and_usage_contract_are_stable() -> TestResult {
     for shell in ["bash", "elvish", "fish", "powershell", "zsh"] {
         let output = invoke(&["completions", shell])?;
         assert!(output.status.success());
-        assert!(!output.stdout.is_empty());
+        assert_ne!(output.stdout, [] as [u8; 0]);
     }
     let usage = invoke(&["inspect"])?;
     assert_eq!(usage.status.code(), Some(2));
